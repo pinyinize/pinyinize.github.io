@@ -16,6 +16,7 @@
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
+          "defaultConfiguration": "local",
           "options": {
             "outputPath": "docs",
             "index": "src/index.html",
@@ -35,7 +36,19 @@
             "scripts": []
           },
           "configurations": {
-            "production": {
+            "local": {
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true,
+              "fileReplacements": [{
+                "replace": "src/environments/environment.ts",
+                "with": "src/environments/environment.local.ts"
+              }]
+            },
+            "prod": {
               "budgets": [
                 {
                   "type": "initial",
@@ -48,30 +61,25 @@
                   "maximumError": "4kb"
                 }
               ],
-              "outputHashing": "all"
-            },
-            "development": {
-              "buildOptimizer": false,
-              "optimization": false,
-              "vendorChunk": true,
-              "extractLicenses": false,
-              "sourceMap": true,
-              "namedChunks": true
+              "outputHashing": "all",
+              "fileReplacements": [{
+                "replace": "src/environments/environment.ts",
+                "with": "src/environments/environment.prod.ts"
+              }]
             }
-          },
-          "defaultConfiguration": "production"
+          }
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
+          "defaultConfiguration": "local",
           "configurations": {
-            "production": {
-              "browserTarget": "myApp:build:production"
+            "local": {
+              "browserTarget": "myApp:build:local"
             },
-            "development": {
-              "browserTarget": "myApp:build:development"
+            "prod": {
+              "browserTarget": "myApp:build:prod"
             }
-          },
-          "defaultConfiguration": "development"
+          }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",

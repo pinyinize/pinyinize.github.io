@@ -5,7 +5,8 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
-    "watch": "ng build --watch --configuration development",
+    "buildprod": "ng build --configuration=prod",
+    "watch": "ng build --watch --configuration local",
     "test": "ng test"
   },
   "private": true,
@@ -26,6 +27,7 @@
     "@angular-devkit/build-angular": "^16.2.0",
     "@angular/cli": "~16.2.0",
     "@angular/compiler-cli": "^16.2.0",
+    "@types/gapi": "^0.0.44",
     "@types/jasmine": "~4.3.0",
     "jasmine-core": "~4.6.0",
     "karma": "~6.4.0",
