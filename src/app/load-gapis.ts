@@ -59,8 +59,17 @@ const gisInitedObs = gisLoadedSubj.pipe(
       client_id: environment.CLIENT_ID,
       scope: SCOPES,
       callback: () => {},
+      error_callback: myErrorCallback,
     })),
 );
+
+function myErrorCallback(err: google.accounts.oauth2.ClientConfigError) {
+  if (err.type == 'popup_failed_to_open') {
+    // The popup window is failed to open
+  } else if (err.type == 'popup_closed') {
+    // The popup window is closed before an OAuth response is returned
+  }
+}
 
 
 export const tokenClientObs =
