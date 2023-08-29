@@ -3,8 +3,8 @@
 /// <reference types='@maxim_mazurok/gapi.client.people' />
 
 import {Component} from '@angular/core';
-import {loginStatusSubj, tokenClientObs} from './load-gapis';
-import {take} from 'rxjs';
+
+import {signIn, signinStatusSubj} from './google-signin';
 
 
 
@@ -15,17 +15,12 @@ import {take} from 'rxjs';
 })
 export class AppComponent {
   title = 'myApp';
-  loginStatus$ = loginStatusSubj;
   constructor() {
-    loginStatusSubj.subscribe(s => console.log('Login status: ', s));
-    tokenClientObs.subscribe(t => console.log('Token client: ', t));
+    signinStatusSubj.subscribe(s => console.log('Login status: ', s));
   }
 
   loginNow() {
-    tokenClientObs.pipe(take(1)).subscribe(tokenClient => {
-      tokenClient.callback = (resp) => console.log('token client response: ', resp);
-      tokenClient.requestAccessToken({prompt: 'consent'});
-    });
+    signIn();
   }
 }
 
