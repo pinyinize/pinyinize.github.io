@@ -9,6 +9,7 @@ import {FrontpageModule} from 'src/frontpage/frontpage.module';
 const routes: Routes = [
   {path: '', pathMatch: 'full', component: FrontpageComponent},
   {path: 'editor', component: EditorComponent},
+  {path: '**', redirectTo: '/'},
 ];
 
 
