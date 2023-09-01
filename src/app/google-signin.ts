@@ -1,4 +1,4 @@
-import {BehaviorSubject, forkJoin, from, Observable, tap} from 'rxjs';
+import {BehaviorSubject, Observable, tap} from 'rxjs';
 
 import {gapiInitedObs, tokenClientObs} from './load-google-apis';
 
@@ -7,13 +7,17 @@ type TokenClient = google.accounts.oauth2.TokenClient;
 type TokenResponse = google.accounts.oauth2.TokenResponse;
 type ClientConfigError = google.accounts.oauth2.ClientConfigError;
 
-export enum SignInStatus {
-  SignedOut,
-  SignedIn,
+
+export class SignInState {
+  constructor(
+      readonly status: 'out'|'in',
+      readonly unknownErrorType?: 'popup_failed_to_open'|'popup_closed',
+      readonly arbitraryErrorMessage?: string,
+  ) {}
 }
 
-export const signinStatusSubj =
-    new BehaviorSubject<[SignInStatus, string]>([SignInStatus.SignedOut, '']);
+export const signinStateSubj =
+    new BehaviorSubject<SignInState>(new SignInState('out'));
 
 
 export function signIn(): Observable<TokenClient> {
@@ -26,7 +30,7 @@ export function signIn(): Observable<TokenClient> {
 }
 
 export function signInWhenSignedOut(): Observable<TokenClient> {
-  if (signinStatusSubj.value) return tokenClientObs;
+  if (signinStateSubj.value) return tokenClientObs;
   return signIn();
 }
 
@@ -34,7 +38,7 @@ export function signOut(): Observable<typeof gapi> {
   return gapiInitedObs.pipe(tap(gapi => {
     gapi.client.setToken(null);
     setSignOutExplicit(true);
-    signinStatusSubj.next([SignInStatus.SignedOut, '']);
+    signinStateSubj.next(new SignInState('out'));
   }));
 }
 
@@ -52,31 +56,22 @@ function setSignOutExplicit(isExplicit: boolean) {
 
 function tokenCallback(resp: TokenResponse) {
   if (resp.error) {
-    updateSigninStatusErrorMessage('TODO');
+    signinStateSubj.next(new SignInState(
+        'out', undefined,
+        `${resp.error}: ${resp.error_description}`));
   } else {
-    signinStatusSubj.next([SignInStatus.SignedIn, '']);
+    signinStateSubj.next(new SignInState('in'));
   }
 }
 
 function tokenErrorCallback(err: ClientConfigError) {
   switch (err.type) {
     case 'popup_failed_to_open':
-      updateSigninStatusErrorMessage('TODO');
-      break;
     case 'popup_closed':
-      updateSigninStatusErrorMessage('TODO');
+      signinStateSubj.next(new SignInState('out', err.type));
       break;
     default:
-      updateSigninStatusErrorMessage(err.type);
+      signinStateSubj.next(
+          new SignInState('out', undefined, err.type));
   }
-}
-
-function updateSigninStatusErrorMessage(msg: string) {
-  if (signinStatusSubj.value[0] !== SignInStatus.SignedOut) {
-    console.warn(
-        '`updateSigninStatusErrorMessage` should be only called at signed ' +
-            'out. But the current signin status is ',
-        signinStatusSubj.value[0]);
-  }
-  signinStatusSubj.next([signinStatusSubj.value[0], msg]);
 }
