@@ -4,7 +4,7 @@
 
 import {Component} from '@angular/core';
 
-import {signIn, signinStateSubj} from './google-signin';
+import {signIn, signinStateSubj} from '../google/google-signin';
 
 
 
