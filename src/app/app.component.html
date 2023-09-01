@@ -1,5 +1,20 @@
 <mat-toolbar color="primary" class="app-toolbar mat-elevation-z4">
-  <span>{{title}}</span>
+  <div style="flex: 1">{{title}}</div>
+
+  <div *ngIf="(signinStateSubj | async)?.isSignedIn; else signedOut">
+    <button mat-stroked-button (click)="signOutNow()">
+      <mat-icon>logout</mat-icon>
+      Sign out
+    </button>
+  </div>
+
+  <ng-template #signedOut>
+    <button mat-stroked-button (click)="signInNow()">
+      <mat-icon>login</mat-icon>
+      Sign in
+    </button>
+  </ng-template>
+
 </mat-toolbar>
 
 <mat-toolbar class="placeholder-toolbar">

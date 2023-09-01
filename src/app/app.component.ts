@@ -4,7 +4,7 @@
 
 import {Component} from '@angular/core';
 
-import {signIn, signinStateSubj} from '../google/google-signin';
+import {signIn, signOut, signinStateSubj} from '../google/google-signin';
 
 
 @Component({
@@ -14,12 +14,18 @@ import {signIn, signinStateSubj} from '../google/google-signin';
 })
 export class AppComponent {
   title = 'myApp';
+  readonly signinStateSubj = signinStateSubj;
+
   constructor() {
     signinStateSubj.subscribe(s => console.log('Login status: ', s));
   }
 
-  loginNow() {
-    signIn();
+  signInNow() {
+    signIn().subscribe();
+  }
+
+  signOutNow() {
+    signOut().subscribe();
   }
 }
 
