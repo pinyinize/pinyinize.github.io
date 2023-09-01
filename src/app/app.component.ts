@@ -7,7 +7,6 @@ import {Component} from '@angular/core';
 import {signIn, signinStateSubj} from '../google/google-signin';
 
 
-
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',

@@ -1,9 +1,10 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
-import {EditorComponent} from 'src/editor/editor.component';
-import {EditorModule} from 'src/editor/editor.module';
-import {FrontpageComponent} from 'src/frontpage/frontpage.component';
-import {FrontpageModule} from 'src/frontpage/frontpage.module';
+
+import {EditorComponent} from '../editor/editor.component';
+import {EditorModule} from '../editor/editor.module';
+import {FrontpageComponent} from '../frontpage/frontpage.component';
+import {FrontpageModule} from '../frontpage/frontpage.module';
 
 
 const routes: Routes = [
