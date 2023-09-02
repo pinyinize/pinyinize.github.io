@@ -1,3 +1,5 @@
+/// <reference types='google.accounts' />
+
 import {BehaviorSubject, Observable, tap} from 'rxjs';
 
 import {gapiInitedObs, tokenClientObs} from './load-google-apis';

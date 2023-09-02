@@ -1,8 +1,6 @@
-/// <reference types='gapi' />
-/// <reference types='google.accounts' />
 /// <reference types='@maxim_mazurok/gapi.client.people' />
 
-import {Component} from '@angular/core';
+import {ChangeDetectionStrategy, Component} from '@angular/core';
 
 import {signIn, signOut, signinStateSubj} from '../google/google-signin';
 
@@ -10,15 +8,12 @@ import {signIn, signOut, signinStateSubj} from '../google/google-signin';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  styleUrls: ['./app.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppComponent {
   title = 'myApp';
   readonly signinStateSubj = signinStateSubj;
-
-  constructor() {
-    signinStateSubj.subscribe(s => console.log('Login status: ', s));
-  }
 
   signInNow() {
     signIn().subscribe();
