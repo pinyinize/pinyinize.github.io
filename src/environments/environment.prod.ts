@@ -1,5 +1,6 @@
 export const environment = {
   production: true,
+  DEBUG_TOKEN: null,
 
   // Doesn't matter if stolen. Restriction is applied.
   CLIENT_ID: '66208330263-1golbeif7s0v22alm171v8fbj2tpem0k.apps.googleusercontent.com',

@@ -2,6 +2,8 @@
 
 import {BehaviorSubject, Observable, tap} from 'rxjs';
 
+import {environment} from '../environments/environment';
+
 import {gapiInitedObs, tokenClientObs} from './load-google-apis';
 
 
@@ -21,6 +23,8 @@ export class SignInState {
 export const signinStateSubj =
     new BehaviorSubject<SignInState>(new SignInState(false));
 
+assumeSignedInWithDebugToken();
+
 
 export function signIn(): Observable<TokenClient> {
   return tokenClientObs.pipe(tap(tokenClient => {
@@ -37,6 +41,30 @@ export function signIn(): Observable<TokenClient> {
 export function signInWhenSignedOut(): Observable<TokenClient> {
   if (signinStateSubj.value) return tokenClientObs;
   return signIn();
+}
+
+async function assumeSignedInWithDebugToken() {
+  const token =
+      (environment as any).DEBUG_TOKEN as GoogleApiOAuth2TokenObject | null;
+  if (!token?.access_token) return;
+
+  const resp = await fetch(
+      'https://oauth2.googleapis.com/tokeninfo?access_token=' +
+      token.access_token);
+
+  if (resp.status >= 300) {
+    console.log(
+        'The debug token from environment.*.ts is not valid. ' +
+        'Please refresh this file.');
+    return;
+  }
+
+  await resp.json();
+
+  gapiInitedObs.subscribe(gapi => {
+    gapi.client.setToken(token);
+    signinStateSubj.next(new SignInState(true));
+  });
 }
 
 export function signOut(): Observable<typeof gapi> {

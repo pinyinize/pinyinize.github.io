@@ -1,4 +1,4 @@
-import {NgModule} from '@angular/core';
+import {NgModule, NgZone} from '@angular/core';
 import {Router, RouterModule, Routes} from '@angular/router';
 import {distinctUntilChanged, map, skip} from 'rxjs';
 import {signinStateSubj} from 'src/google/google-signin';
@@ -25,7 +25,10 @@ const routes: Routes = [
   exports: [RouterModule],
 })
 export class AppRoutingModule {
-  constructor(private readonly router: Router) {
+  constructor(
+      private readonly ngZone: NgZone,
+      private readonly router: Router,
+  ) {
     this.navigateToEditorAtSignInAndNavigateBackAtSignOut();
   }
 
@@ -37,11 +40,13 @@ export class AppRoutingModule {
             skip(1),
             )
         .subscribe(isSignedIn => {
-          if (isSignedIn) {
-            this.router.navigateByUrl('/editor');
-          } else {
-            this.router.navigateByUrl('/');
-          }
+          this.ngZone.run(() => {
+            if (isSignedIn) {
+              this.router.navigateByUrl('/editor');
+            } else {
+              this.router.navigateByUrl('/');
+            }
+          });
         });
   }
 }
